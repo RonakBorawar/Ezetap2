@@ -1,6 +1,7 @@
 package com.ezetap.rborawar2.ezetap;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,9 +20,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (getIntent().getExtras() != null) {
+        if (getIntent().getExtras() != null && isPackageInstalled("com.ezetap.rborawar.ezetaptest", getPackageManager())) {
             calculateAsPerTheAction();
             resendResultToApp1();
+        } else {
+            Toast.makeText(getApplicationContext(),"Please Installed the Parent App for Inputs",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -56,5 +59,20 @@ public class MainActivity extends AppCompatActivity {
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(launchIntent);
         }
+    }
+
+    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+
+        boolean found = true;
+
+        try {
+
+            packageManager.getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+
+            found = false;
+        }
+
+        return found;
     }
 }
